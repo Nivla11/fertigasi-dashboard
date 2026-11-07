@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fertigasi Cabai</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF0E8; --panel:#F7F9F4; --ink:#1B2A22; --mut:#5C6B61; --line:#CBD3C5;
+  --leaf:#2E7D4F; --water:#2A6FA8; --chili:#C92A2A; --amber:#9A6414;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#121A15; --panel:#18231C; --ink:#E7EEE6; --mut:#93A398; --line:#2B3A31;
+        --leaf:#5DBB84; --water:#6FB0E6; --chili:#FF7B7B; --amber:#E5A93D;}
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16px;line-height:1.5;padding:clamp(16px,4vw,48px);max-width:980px;margin-inline:auto}
+header{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;align-items:baseline;
+  padding-bottom:16px;border-bottom:1px solid var(--line)}
+h1{font-size:1.5rem;font-weight:800;margin:0;letter-spacing:-.01em}
+h2{font-size:1.1rem;font-weight:600;margin:0 0 12px}
+.muted{color:var(--mut);font-size:.9rem}
+.pill{display:inline-block;padding:2px 12px;border-radius:999px;font-weight:600;font-size:.9rem;
+  border:1.5px solid currentColor}
+.ok{color:var(--leaf)} .warn{color:var(--amber)} .run{color:var(--chili)} .info{color:var(--water)}
+
+.hero{padding:32px 0 28px;border-bottom:1px solid var(--line)}
+.readings{display:flex;flex-wrap:wrap;gap:8px 56px;align-items:flex-end}
+.big{font-size:clamp(3.5rem,13vw,6.5rem);font-weight:800;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.big small{font-size:.35em;font-weight:600;color:var(--mut);margin-left:.15em;letter-spacing:0}
+.lbl{display:block;font-size:.95rem;color:var(--mut);margin-bottom:4px}
+.t2{font-size:clamp(2rem,7vw,3.2rem);color:var(--ink)}
+
+.band{position:relative;display:flex;height:44px;margin:36px 0 8px;border-radius:6px}
+.z{display:flex;align-items:center;padding-left:10px;font-size:.85rem;font-weight:600;color:var(--ink);overflow:hidden}
+.z:first-child{border-radius:6px 0 0 6px}.z:last-of-type{border-radius:0 6px 6px 0}
+.kering{background:color-mix(in srgb,var(--amber) 28%,var(--bg))}
+.lembab{background:color-mix(in srgb,var(--leaf) 30%,var(--bg))}
+.basah{background:color-mix(in srgb,var(--water) 30%,var(--bg))}
+#mark{position:absolute;top:-10px;bottom:-10px;width:4px;margin-left:-2px;background:var(--ink);border-radius:2px;
+  left:0;transition:left .7s ease;display:none}
+.scale{display:flex;justify-content:space-between;font-size:.8rem;color:var(--mut)}
+
+.facts{display:flex;flex-wrap:wrap;gap:12px 40px;margin-top:20px}
+.facts b{font-weight:600}
+
+section{padding:28px 0;border-bottom:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:10px 8px 10px 0;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--mut);font-size:.9rem}
+td.n{text-align:right;padding-right:24px} th.n{text-align:right;padding-right:24px}
+tr:last-child td{border-bottom:0}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px;background:currentColor}
+
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px}
+svg{width:100%;height:auto;display:block;overflow:visible}
+svg text{fill:var(--mut);font-size:11px;font-family:inherit}
+svg .ln{fill:none;stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+svg .gl{stroke:var(--line);stroke-width:1}
+#err{display:none;margin-top:16px;padding:12px 16px;border-left:4px solid var(--chili);background:var(--panel)}
+footer{padding-top:20px}
+@media (prefers-reduced-motion:reduce){#mark{transition:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Fertigasi cabai</h1>
+  <div><span id="pill" class="pill muted">Memuat…</span>
+       <span id="age" class="muted" style="margin-left:8px"></span></div>
+</header>
+
+<div id="err" role="alert"></div>
+
+<div class="hero">
+  <div class="readings">
+    <div><span class="lbl">Kelembapan tanah, rata-rata node</span>
+         <div class="big"><span id="soil">–</span><small>%</small></div></div>
+    <div><span class="lbl">Suhu</span>
+         <div class="big t2"><span id="temp">–</span><small>°C</small></div></div>
+  </div>
+
+  <div class="band" aria-hidden="true">
+    <!-- lebar zona (flex) mengikuti perkiraan himpunan fuzzy: 0-45 / 45-72 / 72-100 -->
+    <span class="z kering" style="flex:45">Kering</span>
+    <span class="z lembab" style="flex:27">Lembab</span>
+    <span class="z basah"  style="flex:28">Basah</span>
+    <i id="mark"></i>
+  </div>
+  <div class="scale" aria-hidden="true"><span>0</span><span>50</span><span>100</span></div>
+
+  <div class="facts">
+    <div><span class="lbl">Keputusan fuzzy</span><b id="durasi">–</b></div>
+    <div><span class="lbl">Pompa</span><b id="pompa">–</b></div>
+    <div><span class="lbl">Node terpakai</span><b id="nok">–</b></div>
+  </div>
+</div>
+
+<section>
+  <h2>Data per node</h2>
+  <table>
+    <thead><tr><th>Node</th><th class="n">Tanah (%)</th><th class="n">Suhu (°C)</th><th>Status</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Riwayat</h2>
+  <div class="charts">
+    <div><div class="muted">Kelembapan tanah (%)</div><div id="c1"></div></div>
+    <div><div class="muted">Suhu (°C)</div><div id="c2"></div></div>
+  </div>
+</section>
+
+<footer class="muted">Data dari node 1–5 lewat gateway ESP32. Halaman ini memuat ulang otomatis tiap 10 detik.</footer>
+
+<script>
+// ===== PENGATURAN =====
+const FB_HOST    = "NAMA-PROJECT-default-rtdb.asia-southeast1.firebasedatabase.app";
+const FB_AUTH    = "";        // kosongkan jika rules terbuka (jangan isi secret di repo publik)
+const REFRESH_MS = 10000;
+const LOG_COUNT  = 48;        // jumlah ronde terakhir di grafik
+// ======================
+
+const $ = id => document.getElementById(id);
+const nf = (v, d = 1) => (v == null || isNaN(v)) ? "–"
+  : Number(v).toLocaleString("id-ID", {minimumFractionDigits: d, maximumFractionDigits: d});
+
+const STATUS = {
+  FERTIGASI_MULAI:       ["Fertigasi berjalan", "run"],
+  FERTIGASI_SELESAI:     ["Fertigasi selesai", "ok"],
+  TIDAK_PERLU:           ["Tanah cukup, tidak perlu fertigasi", "ok"],
+  DITUNDA_SIANG:         ["Perlu fertigasi, ditunda (larangan siang)", "warn"],
+  DITUNDA_COOLDOWN:      ["Perlu fertigasi, menunggu jeda", "warn"],
+  DITUNDA_SEDANG_JALAN:  ["Fertigasi sedang berjalan", "run"],
+  DITUNDA_WAKTU_INVALID: ["Jam belum sinkron, fertigasi ditahan", "warn"],
+  DATA_KURANG:           ["Data node kurang", "warn"]
+};
+const NODE_STATE = {0: ["Tidak ada data", "muted"], 1: ["Dipakai", "ok"], 2: ["Dibuang (menyimpang)", "warn"]};
+
+const q = p => "?" + [p, FB_AUTH && "auth=" + FB_AUTH].filter(Boolean).join("&");
+async function getJson(url) {
+  const r = await fetch(url, {cache: "no-store"});
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  return r.json();
+}
+
+function render(d) {
+  const [txt, cls] = STATUS[d.status] || [d.status || "–", "info"];
+  $("pill").textContent = txt;
+  $("pill").className = "pill " + cls;
+
+  $("soil").textContent = nf(d.avgSoil);
+  $("temp").textContent = nf(d.avgTemp);
+  const m = $("mark");
+  if (d.avgSoil != null) {
+    m.style.display = "block";
+    m.style.left = Math.min(100, Math.max(0, d.avgSoil)) + "%";
+  } else m.style.display = "none";
+
+  $("durasi").textContent = d.durasiMenit > 0 ? nf(d.durasiMenit) + " menit" : "Tidak perlu";
+  const jalan = d.status === "FERTIGASI_MULAI" || d.status === "DITUNDA_SEDANG_JALAN";
+  $("pompa").textContent = jalan ? "Fertigasi berjalan" : "Siaga";
+  $("nok").textContent = (d.nodesOk ?? "–") + " dari 5";
+
+  let html = "";
+  for (let n = 1; n <= 5; n++) {
+    const x = (d.nodes && d.nodes[n]) || {};
+    const [t, c] = NODE_STATE[x.status ?? 0] || NODE_STATE[0];
+    html += `<tr><td>Node ${n}</td><td class="n">${nf(x.soil)}</td><td class="n">${nf(x.temp)}</td>` +
+            `<td class="${c}"><span class="dot"></span>${t}</td></tr>`;
+  }
+  $("rows").innerHTML = html;
+
+  if (d.ts > 1.7e9) {
+    const mnt = Math.round((Date.now() / 1000 - d.ts) / 60);
+    $("age").textContent = mnt < 1 ? "baru saja" : mnt + " menit lalu" + (mnt > 20 ? " (data lama)" : "");
+  } else $("age").textContent = d.waktu || "";
+}
+
+function chart(el, vals, labels, color, unit) {
+  if (vals.length < 2) { el.innerHTML = '<p class="muted">Belum cukup data.</p>'; return; }
+  const W = 320, H = 130, L = 34, B = 20, T = 8;
+  let mn = Math.min(...vals), mx = Math.max(...vals);
+  if (mx - mn < 2) { mn -= 1; mx += 1; }
+  const x = i => L + (W - L - 4) * i / (vals.length - 1);
+  const y = v => T + (H - T - B) * (1 - (v - mn) / (mx - mn));
+  const pts = vals.map((v, i) => x(i).toFixed(1) + "," + y(v).toFixed(1)).join(" ");
+  el.innerHTML =
+    `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Grafik ${unit}">` +
+    `<line class="gl" x1="${L}" x2="${W}" y1="${y(mx)}" y2="${y(mx)}"/>` +
+    `<line class="gl" x1="${L}" x2="${W}" y1="${y(mn)}" y2="${y(mn)}"/>` +
+    `<text x="${L - 6}" y="${y(mx) + 4}" text-anchor="end">${nf(mx, 0)}</text>` +
+    `<text x="${L - 6}" y="${y(mn) + 4}" text-anchor="end">${nf(mn, 0)}</text>` +
+    `<polyline class="ln" stroke="${color}" points="${pts}"/>` +
+    `<circle cx="${x(vals.length - 1)}" cy="${y(vals[vals.length - 1])}" r="3.5" fill="${color}"/>` +
+    `<text x="${L}" y="${H - 4}">${labels[0]}</text>` +
+    `<text x="${W}" y="${H - 4}" text-anchor="end">${labels[labels.length - 1]}</text></svg>`;
+}
+
+async function loadHistory() {
+  try {
+    const raw = await getJson(`https://${FB_HOST}/fertigasi/log.json` +
+      q(`orderBy=%22%24key%22&limitToLast=${LOG_COUNT * 2}`));
+    const rows = Object.keys(raw || {}).sort().map(k => raw[k])
+      .filter(r => r.event === "RONDE" && r.avgSoil != null).slice(-LOG_COUNT);
+    const lab = rows.map(r => (r.waktu || "").slice(5, 16).replace("-", "/"));
+    chart($("c1"), rows.map(r => r.avgSoil), lab, "var(--water)", "kelembapan tanah");
+    chart($("c2"), rows.map(r => r.avgTemp), lab, "var(--chili)", "suhu");
+  } catch (e) { /* riwayat opsional */ }
+}
+
+async function load() {
+  const err = $("err");
+  let d = null;
+  try {
+    d = await getJson(`https://${FB_HOST}/fertigasi/latest.json` + q(""));
+    err.style.display = "none";
+    loadHistory();
+  } catch (e) {
+    try { d = await getJson("data/latest.json?t=" + Date.now()); }   // cadangan dari GitHub
+    catch (e2) {
+      err.textContent = "Data belum bisa dibaca (" + e.message + "). Cek FB_HOST di index.html dan Rules Firebase.";
+      err.style.display = "block";
+      return;
+    }
+  }
+  if (!d) {
+    err.textContent = "Belum ada data. Tunggu ronde pertama dari node.";
+    err.style.display = "block";
+    return;
+  }
+  render(d);
+}
+
+load();
+setInterval(load, REFRESH_MS);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) load(); });
+</script>
+</body>
+</html>
