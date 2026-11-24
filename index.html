@@ -253,8 +253,8 @@ $("btnLogin").onclick = () => {
   $("lgErr").textContent = "";
   auth.signInWithEmailAndPassword($("lgEmail").value.trim(), $("lgPass").value)
       .catch(err => {
-        console.error(err.code, err.message);
-        $("lgErr").textContent = `${err.code}: ${err.message}`;
+        console.error(err);
+        $("lgErr").textContent = err.code + ": " + err.message;
       });
 };
 $("lgPass").addEventListener("keydown", e => { if (e.key === "Enter") $("btnLogin").click(); });
