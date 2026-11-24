@@ -3,244 +3,258 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fertigasi Cabai</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<title>Fertigasi Cabai WSN</title>
 <style>
-:root{
-  --bg:#EDF0E8; --panel:#F7F9F4; --ink:#1B2A22; --mut:#5C6B61; --line:#CBD3C5;
-  --leaf:#2E7D4F; --water:#2A6FA8; --chili:#C92A2A; --amber:#9A6414;
+:root {
+  --bg:#f3f6f1; --surface:#ffffff; --ink:#1c2a22; --muted:#5d6f64; --line:#d5ddd5;
+  --accent:#2f6b4a; --accent-ink:#ffffff; --on:#1f9d55; --off:#b9c3bb; --warn:#b4531f;
 }
-@media (prefers-color-scheme:dark){
-  :root{--bg:#121A15; --panel:#18231C; --ink:#E7EEE6; --mut:#93A398; --line:#2B3A31;
-        --leaf:#5DBB84; --water:#6FB0E6; --chili:#FF7B7B; --amber:#E5A93D;}
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#121a15; --surface:#1a251e; --ink:#e6efe8; --muted:#9db0a3; --line:#2c3b31;
+          --accent:#5fbf8a; --accent-ink:#0f1a13; --on:#4fd18a; --off:#3b4a40; --warn:#e79a6b; }
 }
-*{box-sizing:border-box}
-html{background:var(--bg)}
-body{margin:0;color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;
-  font-size:16px;line-height:1.5;padding:clamp(16px,4vw,48px);max-width:980px;margin-inline:auto}
-header{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;align-items:baseline;
-  padding-bottom:16px;border-bottom:1px solid var(--line)}
-h1{font-size:1.5rem;font-weight:800;margin:0;letter-spacing:-.01em}
-h2{font-size:1.1rem;font-weight:600;margin:0 0 12px}
-.muted{color:var(--mut);font-size:.9rem}
-.pill{display:inline-block;padding:2px 12px;border-radius:999px;font-weight:600;font-size:.9rem;
-  border:1.5px solid currentColor}
-.ok{color:var(--leaf)} .warn{color:var(--amber)} .run{color:var(--chili)} .info{color:var(--water)}
-
-.hero{padding:32px 0 28px;border-bottom:1px solid var(--line)}
-.readings{display:flex;flex-wrap:wrap;gap:8px 56px;align-items:flex-end}
-.big{font-size:clamp(3.5rem,13vw,6.5rem);font-weight:800;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-.big small{font-size:.35em;font-weight:600;color:var(--mut);margin-left:.15em;letter-spacing:0}
-.lbl{display:block;font-size:.95rem;color:var(--mut);margin-bottom:4px}
-.t2{font-size:clamp(2rem,7vw,3.2rem);color:var(--ink)}
-
-.band{position:relative;display:flex;height:44px;margin:36px 0 8px;border-radius:6px}
-.z{display:flex;align-items:center;padding-left:10px;font-size:.85rem;font-weight:600;color:var(--ink);overflow:hidden}
-.z:first-child{border-radius:6px 0 0 6px}.z:last-of-type{border-radius:0 6px 6px 0}
-.kering{background:color-mix(in srgb,var(--amber) 28%,var(--bg))}
-.lembab{background:color-mix(in srgb,var(--leaf) 30%,var(--bg))}
-.basah{background:color-mix(in srgb,var(--water) 30%,var(--bg))}
-#mark{position:absolute;top:-10px;bottom:-10px;width:4px;margin-left:-2px;background:var(--ink);border-radius:2px;
-  left:0;transition:left .7s ease;display:none}
-.scale{display:flex;justify-content:space-between;font-size:.8rem;color:var(--mut)}
-
-.facts{display:flex;flex-wrap:wrap;gap:12px 40px;margin-top:20px}
-.facts b{font-weight:600}
-
-section{padding:28px 0;border-bottom:1px solid var(--line)}
-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
-th,td{text-align:left;padding:10px 8px 10px 0;border-bottom:1px solid var(--line)}
-th{font-weight:600;color:var(--mut);font-size:.9rem}
-td.n{text-align:right;padding-right:24px} th.n{text-align:right;padding-right:24px}
-tr:last-child td{border-bottom:0}
-.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px;background:currentColor}
-
-.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px}
-svg{width:100%;height:auto;display:block;overflow:visible}
-svg text{fill:var(--mut);font-size:11px;font-family:inherit}
-svg .ln{fill:none;stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
-svg .gl{stroke:var(--line);stroke-width:1}
-#err{display:none;margin-top:16px;padding:12px 16px;border-left:4px solid var(--chili);background:var(--panel)}
-footer{padding-top:20px}
-@media (prefers-reduced-motion:reduce){#mark{transition:none}}
+* { box-sizing:border-box; }
+html,body { margin:0; }
+body { background:var(--bg); color:var(--ink); font:16px/1.5 "Segoe UI",system-ui,sans-serif; padding:16px; }
+main { max-width:960px; margin:0 auto; }
+header { display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; margin-bottom:16px; }
+h1 { font-size:1.35rem; margin:0; }
+h2 { font-size:1.05rem; margin:0 0 10px; }
+.conn { font-size:.85rem; color:var(--muted); }
+.conn b { color:var(--warn); } .conn b.ok { color:var(--on); }
+.seg { display:inline-flex; border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+.seg button { border:0; background:var(--surface); color:var(--ink); padding:9px 22px; font:inherit; cursor:pointer; }
+.seg button[aria-pressed="true"] { background:var(--accent); color:var(--accent-ink); font-weight:600; }
+.seg button:focus-visible, .btn:focus-visible, input:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+section { background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:16px; margin-bottom:16px; }
+.grid5 { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
+.node { border:1px solid var(--line); border-radius:6px; padding:10px; }
+.node .t { color:var(--muted); font-size:.85rem; }
+.node .v { font-size:1.15rem; font-variant-numeric:tabular-nums; }
+.big { font-size:2rem; font-variant-numeric:tabular-nums; font-weight:600; }
+.row { display:flex; flex-wrap:wrap; gap:24px; }
+.row > div { min-width:130px; }
+.lbl { color:var(--muted); font-size:.85rem; }
+.acts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:8px; }
+.act { display:flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:6px; padding:8px 10px; }
+.dot { width:14px; height:14px; border-radius:50%; background:var(--off); flex:none; }
+.act.on .dot { background:var(--on); box-shadow:0 0 0 4px color-mix(in srgb, var(--on) 25%, transparent); }
+.act.on { border-color:var(--on); }
+.sim-in { display:grid; grid-template-columns:auto 1fr 1fr; gap:8px 10px; align-items:center; max-width:460px; }
+.sim-in .h { color:var(--muted); font-size:.85rem; }
+input[type=number], input[type=email], input[type=password] { width:100%; padding:8px; border:1px solid var(--line); border-radius:6px; background:var(--bg); color:var(--ink); font:inherit; }
+.btn { background:var(--accent); color:var(--accent-ink); border:0; border-radius:6px; padding:10px 18px; font:inherit; font-weight:600; cursor:pointer; }
+.btn.ghost { background:transparent; color:var(--ink); border:1px solid var(--line); font-weight:400; }
+.btn:disabled { opacity:.5; cursor:not-allowed; }
+.pill { display:inline-block; padding:2px 10px; border-radius:99px; border:1px solid var(--line); font-size:.85rem; }
+table { border-collapse:collapse; width:100%; font-size:.9rem; font-variant-numeric:tabular-nums; }
+th,td { border-bottom:1px solid var(--line); padding:6px 8px; text-align:right; }
+th:first-child,td:first-child { text-align:left; }
+.scroll { overflow-x:auto; }
+.hidden { display:none; }
 </style>
 </head>
 <body>
+<main>
+  <section id="login" class="hidden" style="max-width:360px">
+    <h2>Masuk</h2>
+    <p><label class="lbl" for="lgEmail">Email</label><br><input type="email" id="lgEmail" style="width:100%"></p>
+    <p><label class="lbl" for="lgPass">Password</label><br><input type="password" id="lgPass" style="width:100%"></p>
+    <button class="btn" id="btnLogin">Masuk</button>
+    <p class="lbl" id="lgErr" style="color:var(--warn)"></p>
+  </section>
 
-<header>
-  <h1>Fertigasi cabai</h1>
-  <div><span id="pill" class="pill muted">Memuat…</span>
-       <span id="age" class="muted" style="margin-left:8px"></span></div>
-</header>
+  <div id="app" class="hidden">
+  <header>
+    <div>
+      <h1>Fertigasi Cabai berbasis WSN</h1>
+      <div class="conn">Kontroller ESP32: <b id="conn">menunggu…</b></div>
+    </div>
+    <div class="seg" role="group" aria-label="Pilih mode">
+      <button id="btnAuto" aria-pressed="true">Auto</button>
+      <button id="btnSim" aria-pressed="false">Sim</button>
+    </div>
+  </header>
 
-<div id="err" role="alert"></div>
-
-<div class="hero">
-  <div class="readings">
-    <div><span class="lbl">Kelembapan tanah, rata-rata node</span>
-         <div class="big"><span id="soil">–</span><small>%</small></div></div>
-    <div><span class="lbl">Suhu</span>
-         <div class="big t2"><span id="temp">–</span><small>°C</small></div></div>
+  <!-- ============ MODE AUTO ============ -->
+  <div id="viewAuto">
+    <section>
+      <h2>Data node sensor</h2>
+      <div class="grid5" id="nodes"></div>
+    </section>
+    <section>
+      <h2>Hasil fuzzy (siklus per 1 jam)</h2>
+      <div class="row">
+        <div><div class="lbl">Rata-rata tanah</div><div class="big" id="aSoil">–</div></div>
+        <div><div class="lbl">Rata-rata suhu</div><div class="big" id="aAir">–</div></div>
+        <div><div class="lbl">Durasi fuzzy (detik)</div><div class="big" id="aDur">–</div></div>
+        <div><div class="lbl">Durasi terukur SV2 (detik)</div><div class="big" id="aMeas">–</div></div>
+      </div>
+      <p><span class="pill" id="aState">–</span> <span class="lbl" id="aReason"></span></p>
+      <div class="lbl" id="aTs"></div>
+    </section>
   </div>
 
-  <div class="band" aria-hidden="true">
-    <!-- lebar zona (flex) mengikuti perkiraan himpunan fuzzy: 0-45 / 45-72 / 72-100 -->
-    <span class="z kering" style="flex:45">Kering</span>
-    <span class="z lembab" style="flex:27">Lembab</span>
-    <span class="z basah"  style="flex:28">Basah</span>
-    <i id="mark"></i>
+  <!-- ============ MODE SIM ============ -->
+  <div id="viewSim" class="hidden">
+    <section>
+      <h2>Input simulasi</h2>
+      <div class="sim-in" id="simIn">
+        <span></span><span class="h">Kelembapan tanah (%)</span><span class="h">Suhu udara (°C)</span>
+      </div>
+      <p>
+        <label class="lbl" for="simHour">Jam simulasi (0–23)</label><br>
+        <input type="number" id="simHour" min="0" max="23" value="8" style="max-width:120px">
+      </p>
+      <button class="btn" id="btnRun">Jalankan simulasi</button>
+      <button class="btn ghost" id="btnFill">Isi contoh (tanah 30, suhu 30)</button>
+    </section>
+    <section>
+      <h2>Respon ESP32</h2>
+      <div class="row">
+        <div><div class="lbl">Rata-rata tanah</div><div class="big" id="sSoil">–</div></div>
+        <div><div class="lbl">Rata-rata suhu</div><div class="big" id="sAir">–</div></div>
+        <div><div class="lbl">Durasi fuzzy (detik)</div><div class="big" id="sDur">–</div></div>
+        <div><div class="lbl">Durasi terukur SV2 (detik)</div><div class="big" id="sMeas">–</div></div>
+      </div>
+      <p><span class="pill" id="sState">–</span> <span class="lbl" id="sReason"></span></p>
+    </section>
+    <section>
+      <h2>Rekap pengujian</h2>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>No</th><th>Tanah (%)</th><th>Suhu (°C)</th><th>Durasi ESP32 (detik)</th></tr></thead>
+          <tbody id="log"></tbody>
+        </table>
+      </div>
+      <p><button class="btn ghost" id="btnCopy">Salin tabel</button>
+         <button class="btn ghost" id="btnClear">Kosongkan</button></p>
+    </section>
   </div>
-  <div class="scale" aria-hidden="true"><span>0</span><span>50</span><span>100</span></div>
 
-  <div class="facts">
-    <div><span class="lbl">Keputusan fuzzy</span><b id="durasi">–</b></div>
-    <div><span class="lbl">Pompa</span><b id="pompa">–</b></div>
-    <div><span class="lbl">Node terpakai</span><b id="nok">–</b></div>
+  <!-- ============ AKTUATOR (kedua mode) ============ -->
+  <section>
+    <h2>Indikator aktuator</h2>
+    <p class="lbl">Tahap siklus: <span class="pill" id="stage">siaga</span></p>
+    <div class="acts" id="acts"></div>
+  </section>
   </div>
-</div>
+</main>
 
-<section>
-  <h2>Data per node</h2>
-  <table>
-    <thead><tr><th>Node</th><th class="n">Tanah (%)</th><th class="n">Suhu (°C)</th><th>Status</th></tr></thead>
-    <tbody id="rows"></tbody>
-  </table>
-</section>
-
-<section>
-  <h2>Riwayat</h2>
-  <div class="charts">
-    <div><div class="muted">Kelembapan tanah (%)</div><div id="c1"></div></div>
-    <div><div class="muted">Suhu (°C)</div><div id="c2"></div></div>
-  </div>
-</section>
-
-<footer class="muted">Data dari node 1–5 lewat gateway ESP32. Halaman ini memuat ulang otomatis tiap 10 detik.</footer>
-
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="firebase-config.js"></script>
 <script>
-// ===== PENGATURAN =====
-const FB_HOST    = "https://fertigasi-cabai-default-rtdb.asia-southeast1.firebasedatabase.app";
-const FB_AUTH    = "";        // kosongkan jika rules terbuka (jangan isi secret di repo publik)
-const REFRESH_MS = 10000;
-const LOG_COUNT  = 48;        // jumlah ronde terakhir di grafik
-// ======================
+// firebaseConfig dibaca dari firebase-config.js (dimuat sebelum skrip ini)
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
+const ACT = [["pumpWater","Pompa air"],["pumpA","Pompa pupuk A"],["pumpB","Pompa pupuk B"],
+             ["pumpMix","Pompa campur"],["sv1","Solenoid valve 1"],["sv2","Solenoid valve 2"]];
+const STAGE = {idle:"siaga", fill:"isi air", doseA:"dosing pupuk A", doseB:"dosing pupuk B",
+               mix:"pengadukan", dist:"distribusi (SV2 aktif)"};
+const STATE = {running:"berjalan", done:"selesai", skipped:"tidak ada aksi"};
 const $ = id => document.getElementById(id);
-const nf = (v, d = 1) => (v == null || isNaN(v)) ? "–"
-  : Number(v).toLocaleString("id-ID", {minimumFractionDigits: d, maximumFractionDigits: d});
+const fmt = (v, d=1) => (v === undefined || v === null || isNaN(v)) ? "–" : Number(v).toFixed(d);
 
-const STATUS = {
-  FERTIGASI_MULAI:       ["Fertigasi berjalan", "run"],
-  FERTIGASI_SELESAI:     ["Fertigasi selesai", "ok"],
-  TIDAK_PERLU:           ["Tanah cukup, tidak perlu fertigasi", "ok"],
-  DITUNDA_SIANG:         ["Perlu fertigasi, ditunda (larangan siang)", "warn"],
-  DITUNDA_COOLDOWN:      ["Perlu fertigasi, menunggu jeda", "warn"],
-  DITUNDA_SEDANG_JALAN:  ["Fertigasi sedang berjalan", "run"],
-  DITUNDA_WAKTU_INVALID: ["Jam belum sinkron, fertigasi ditahan", "warn"],
-  DATA_KURANG:           ["Data node kurang", "warn"]
+// ---- bangun elemen statis ----
+$("nodes").innerHTML = [1,2,3,4,5].map(i =>
+  `<div class="node"><div class="t">Node ${i}</div>
+   <div class="v"><span id="n${i}s">–</span> %</div>
+   <div class="v"><span id="n${i}a">–</span> °C</div></div>`).join("");
+$("acts").innerHTML = ACT.map(([k,n]) =>
+  `<div class="act" id="act_${k}"><span class="dot"></span><span>${n}</span></div>`).join("");
+$("simIn").insertAdjacentHTML("beforeend", [1,2,3,4,5].map(i =>
+  `<span>Node ${i}</span>
+   <input type="number" id="s${i}" min="0" max="100" step="0.1" value="30" aria-label="Tanah node ${i}">
+   <input type="number" id="t${i}" min="0" max="60" step="0.1" value="30" aria-label="Suhu node ${i}">`).join(""));
+
+function start() {
+// ---- saklar mode ----
+function showMode(m) {
+  const sim = m === "sim";
+  $("viewAuto").classList.toggle("hidden", sim);
+  $("viewSim").classList.toggle("hidden", !sim);
+  $("btnAuto").setAttribute("aria-pressed", String(!sim));
+  $("btnSim").setAttribute("aria-pressed", String(sim));
+}
+$("btnAuto").onclick = () => db.ref("control/mode").set("auto");
+$("btnSim").onclick  = () => db.ref("control/mode").set("sim");
+db.ref("control/mode").on("value", s => showMode(s.val() || "auto"));
+
+// ---- status ESP32 & aktuator ----
+db.ref("status").on("value", s => {
+  const v = s.val() || {};
+  const a = v.actuators || {};
+  ACT.forEach(([k]) => $("act_"+k).classList.toggle("on", !!a[k]));
+  $("stage").textContent = STAGE[v.stage] || "siaga";
+  const online = v.lastSeen && (Date.now() - v.lastSeen) < 90000;
+  $("conn").textContent = online ? "terhubung" : "tidak terhubung";
+  $("conn").className = online ? "ok" : "";
+  $("btnRun").disabled = !online || (v.stage && v.stage !== "idle");
+});
+
+// ---- mode AUTO ----
+db.ref("auto/nodes").on("value", s => {
+  const v = s.val() || {};
+  for (let i=1;i<=5;i++) { const n = v["n"+i] || {}; $("n"+i+"s").textContent = fmt(n.soil); $("n"+i+"a").textContent = fmt(n.air); }
+});
+db.ref("auto/fuzzy").on("value", s => {
+  const v = s.val() || {};
+  $("aSoil").textContent = fmt(v.soilAvg); $("aAir").textContent = fmt(v.airAvg);
+  $("aDur").textContent = fmt(v.durFuzzy, 2); $("aMeas").textContent = fmt(v.durMeasured, 1);
+  $("aState").textContent = STATE[v.state] || "–"; $("aReason").textContent = v.reason || "";
+  $("aTs").textContent = v.ts ? "Siklus terakhir: " + new Date(v.ts).toLocaleString("id-ID") : "";
+});
+
+// ---- mode SIM ----
+let pending = null;   // {id, soil, air} permintaan yang menunggu hasil
+const rows = [];
+function renderLog() {
+  $("log").innerHTML = rows.map((r,i) =>
+    `<tr><td>${i+1}</td><td>${r.soil}</td><td>${r.air}</td><td>${fmt(r.meas,2)}</td></tr>`).join("");
+}
+$("btnFill").onclick = () => { for (let i=1;i<=5;i++){ $("s"+i).value = 30; $("t"+i).value = 30; } };
+$("btnRun").onclick = () => {
+  const req = { id: Date.now(), hour: Number($("simHour").value) };
+  let ss = 0, tt = 0;
+  for (let i=1;i<=5;i++) { req["s"+i] = Number($("s"+i).value); req["t"+i] = Number($("t"+i).value); ss += req["s"+i]; tt += req["t"+i]; }
+  pending = { id: req.id, soil: +(ss/5).toFixed(1), air: +(tt/5).toFixed(1) };
+  $("sState").textContent = "menunggu ESP32…"; $("sReason").textContent = "";
+  db.ref("control/simReq").set(req);
 };
-const NODE_STATE = {0: ["Tidak ada data", "muted"], 1: ["Dipakai", "ok"], 2: ["Dibuang (menyimpang)", "warn"]};
-
-const q = p => "?" + [p, FB_AUTH && "auth=" + FB_AUTH].filter(Boolean).join("&");
-async function getJson(url) {
-  const r = await fetch(url, {cache: "no-store"});
-  if (!r.ok) throw new Error("HTTP " + r.status);
-  return r.json();
-}
-
-function render(d) {
-  const [txt, cls] = STATUS[d.status] || [d.status || "–", "info"];
-  $("pill").textContent = txt;
-  $("pill").className = "pill " + cls;
-
-  $("soil").textContent = nf(d.avgSoil);
-  $("temp").textContent = nf(d.avgTemp);
-  const m = $("mark");
-  if (d.avgSoil != null) {
-    m.style.display = "block";
-    m.style.left = Math.min(100, Math.max(0, d.avgSoil)) + "%";
-  } else m.style.display = "none";
-
-  $("durasi").textContent = d.durasiMenit > 0 ? nf(d.durasiMenit) + " menit" : "Tidak perlu";
-  const jalan = d.status === "FERTIGASI_MULAI" || d.status === "DITUNDA_SEDANG_JALAN";
-  $("pompa").textContent = jalan ? "Fertigasi berjalan" : "Siaga";
-  $("nok").textContent = (d.nodesOk ?? "–") + " dari 5";
-
-  let html = "";
-  for (let n = 1; n <= 5; n++) {
-    const x = (d.nodes && d.nodes[n]) || {};
-    const [t, c] = NODE_STATE[x.status ?? 0] || NODE_STATE[0];
-    html += `<tr><td>Node ${n}</td><td class="n">${nf(x.soil)}</td><td class="n">${nf(x.temp)}</td>` +
-            `<td class="${c}"><span class="dot"></span>${t}</td></tr>`;
+db.ref("sim/response").on("value", s => {
+  const v = s.val() || {};
+  $("sSoil").textContent = fmt(v.soilAvg); $("sAir").textContent = fmt(v.airAvg);
+  $("sDur").textContent = fmt(v.durFuzzy, 2); $("sMeas").textContent = fmt(v.durMeasured, 1);
+  $("sState").textContent = STATE[v.state] || "–"; $("sReason").textContent = v.reason || "";
+  if (pending && v.id === pending.id && v.state === "done") {
+    rows.push({ soil: pending.soil, air: pending.air, meas: v.durMeasured });
+    pending = null; renderLog();
   }
-  $("rows").innerHTML = html;
-
-  if (d.ts > 1.7e9) {
-    const mnt = Math.round((Date.now() / 1000 - d.ts) / 60);
-    $("age").textContent = mnt < 1 ? "baru saja" : mnt + " menit lalu" + (mnt > 20 ? " (data lama)" : "");
-  } else $("age").textContent = d.waktu || "";
+});
+$("btnClear").onclick = () => { rows.length = 0; renderLog(); };
+$("btnCopy").onclick = () => {
+  const t = rows.map((r,i) => [i+1, r.soil, r.air, fmt(r.meas,2).replace(".",",")].join("\t")).join("\n");
+  navigator.clipboard.writeText(t).then(() => { $("btnCopy").textContent = "Tersalin"; setTimeout(()=>$("btnCopy").textContent="Salin tabel",1500); });
+};
 }
 
-function chart(el, vals, labels, color, unit) {
-  if (vals.length < 2) { el.innerHTML = '<p class="muted">Belum cukup data.</p>'; return; }
-  const W = 320, H = 130, L = 34, B = 20, T = 8;
-  let mn = Math.min(...vals), mx = Math.max(...vals);
-  if (mx - mn < 2) { mn -= 1; mx += 1; }
-  const x = i => L + (W - L - 4) * i / (vals.length - 1);
-  const y = v => T + (H - T - B) * (1 - (v - mn) / (mx - mn));
-  const pts = vals.map((v, i) => x(i).toFixed(1) + "," + y(v).toFixed(1)).join(" ");
-  el.innerHTML =
-    `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Grafik ${unit}">` +
-    `<line class="gl" x1="${L}" x2="${W}" y1="${y(mx)}" y2="${y(mx)}"/>` +
-    `<line class="gl" x1="${L}" x2="${W}" y1="${y(mn)}" y2="${y(mn)}"/>` +
-    `<text x="${L - 6}" y="${y(mx) + 4}" text-anchor="end">${nf(mx, 0)}</text>` +
-    `<text x="${L - 6}" y="${y(mn) + 4}" text-anchor="end">${nf(mn, 0)}</text>` +
-    `<polyline class="ln" stroke="${color}" points="${pts}"/>` +
-    `<circle cx="${x(vals.length - 1)}" cy="${y(vals[vals.length - 1])}" r="3.5" fill="${color}"/>` +
-    `<text x="${L}" y="${H - 4}">${labels[0]}</text>` +
-    `<text x="${W}" y="${H - 4}" text-anchor="end">${labels[labels.length - 1]}</text></svg>`;
-}
-
-async function loadHistory() {
-  try {
-    const raw = await getJson(`https://${FB_HOST}/fertigasi/log.json` +
-      q(`orderBy=%22%24key%22&limitToLast=${LOG_COUNT * 2}`));
-    const rows = Object.keys(raw || {}).sort().map(k => raw[k])
-      .filter(r => r.event === "RONDE" && r.avgSoil != null).slice(-LOG_COUNT);
-    const lab = rows.map(r => (r.waktu || "").slice(5, 16).replace("-", "/"));
-    chart($("c1"), rows.map(r => r.avgSoil), lab, "var(--water)", "kelembapan tanah");
-    chart($("c2"), rows.map(r => r.avgTemp), lab, "var(--chili)", "suhu");
-  } catch (e) { /* riwayat opsional */ }
-}
-
-async function load() {
-  const err = $("err");
-  let d = null;
-  try {
-    d = await getJson(`https://${FB_HOST}/fertigasi/latest.json` + q(""));
-    err.style.display = "none";
-    loadHistory();
-  } catch (e) {
-    try { d = await getJson("data/latest.json?t=" + Date.now()); }   // cadangan dari GitHub
-    catch (e2) {
-      err.textContent = "Data belum bisa dibaca (" + e.message + "). Cek FB_HOST di index.html dan Rules Firebase.";
-      err.style.display = "block";
-      return;
-    }
-  }
-  if (!d) {
-    err.textContent = "Belum ada data. Tunggu ronde pertama dari node.";
-    err.style.display = "block";
-    return;
-  }
-  render(d);
-}
-
-load();
-setInterval(load, REFRESH_MS);
-document.addEventListener("visibilitychange", () => { if (!document.hidden) load(); });
+// ---- login (listener data baru dipasang setelah login berhasil) ----
+let started = false;
+const auth = firebase.auth();
+auth.onAuthStateChanged(u => {
+  $("login").classList.toggle("hidden", !!u);
+  $("app").classList.toggle("hidden", !u);
+  if (u && !started) { started = true; start(); }
+});
+$("btnLogin").onclick = () => {
+  $("lgErr").textContent = "";
+  auth.signInWithEmailAndPassword($("lgEmail").value.trim(), $("lgPass").value)
+      .catch(() => { $("lgErr").textContent = "Email atau password salah."; });
+};
+$("lgPass").addEventListener("keydown", e => { if (e.key === "Enter") $("btnLogin").click(); });
 </script>
 </body>
 </html>

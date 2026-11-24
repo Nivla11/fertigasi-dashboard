@@ -1,0 +1,6 @@
+# Kredensial ESP32 - jangan pernah di-commit
+secret.h
+**/secret.h
+*.env
+.DS_Store
+Thumbs.db
