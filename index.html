@@ -252,7 +252,10 @@ auth.onAuthStateChanged(u => {
 $("btnLogin").onclick = () => {
   $("lgErr").textContent = "";
   auth.signInWithEmailAndPassword($("lgEmail").value.trim(), $("lgPass").value)
-      .catch(() => { $("lgErr").textContent = "Email atau password salah."; });
+      .catch(err => {
+        console.error(err.code, err.message);
+        $("lgErr").textContent = `${err.code}: ${err.message}`;
+      });
 };
 $("lgPass").addEventListener("keydown", e => { if (e.key === "Enter") $("btnLogin").click(); });
 </script>
